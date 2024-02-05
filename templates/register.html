@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+  <body>
+    <form method="POST", action="">
+      {{ form.hidden_tag() }}
+      {{ form.username }}
+      {{ form.password }}
+      {{ form.submit }}
+      {% if form.username.errors %}
+        frontend guy handle the errors
+      {% endif %}
+    </form>
+  </body>
+</html>
