@@ -44,6 +44,26 @@ class Song(db.Model):
     tonart = db.Column(db.String(50), nullable=False)
 
 
+playlist_songs = db.Table('playlist_songs',
+                          db.Column('playlist_id',
+                                    db.Integer, db.ForeignKey('playlist.id'),
+                                    primary_key=True),
+                          db.Column('song_id',
+                                    db.Integer,
+                                    db.ForeignKey('song.id'),
+                                    primary_key=True))
+
+
+class Playlist(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(40), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+
+    user = db.relationship('User', backref=db.backref('playlists', lazy=True))
+    songs = db.relationship('Song', secondary=playlist_songs, lazy='subquery',
+                            backref=db.backref('playlists', lazy=True))
+
+
 class RegisterForm(FlaskForm):
     username = StringField(validators=[
                            InputRequired(), Length(min=4, max=20)],
