@@ -1,5 +1,10 @@
 <html>
   <body>
-    login
+    <form method="POST", action="">
+      {{ form.hidden_tag() }}
+      {{ form.username }}
+      {{ form.password }}
+      {{ form.submit }}
+    </form>
   </body>
 </html>
