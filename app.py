@@ -2,8 +2,8 @@ from flask import Flask, render_template, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField
-from wtforms.validators import InputRequired, Length, ValidationError
+from wtforms import StringField, PasswordField, SubmitField, SelectField, DateField, IntegerField
+from wtforms.validators import InputRequired, Length, ValidationError, Optional
 from flask_bcrypt import Bcrypt
 
 
@@ -30,6 +30,18 @@ class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True, unique=True)
     username = db.Column(db.String(20), nullable=False, unique=True)
     password = db.Column(db.String(820), nullable=False)
+
+
+class Song(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    artist_name = db.Column(db.String(100), nullable=False)
+    title = db.Column(db.String(100), nullable=False)
+    release_date = db.Column(db.Date, nullable=False)
+    duration = db.Column(db.Integer, nullable=False)
+    genre = db.Column(db.String(50), nullable=False)
+    takt = db.Column(db.String(20), nullable=False)
+    tempo = db.Column(db.Integer, nullable=False)
+    tonart = db.Column(db.String(50), nullable=False)
 
 
 class RegisterForm(FlaskForm):
@@ -59,6 +71,19 @@ class LoginForm(FlaskForm):
                              render_kw={"placeholder": "Password"})
 
     submit = SubmitField('Login')
+
+
+class SearchForm(FlaskForm):
+    name = StringField('Name', validators=[Optional()])
+    artist_name = StringField('Artist Name', validators=[Optional()])
+    tonart = SelectField('Tonart', validators=[Optional()])
+    genre = SelectField('Genre', validators=[Optional()])
+    takt = SelectField('Takt', validators=[Optional()])
+    release_start = DateField('Release Start', validators=[Optional()])
+    release_end = DateField('Release End', validators=[Optional()])
+    tempo_min = IntegerField('Tempo Min', validators=[Optional()])
+    tempo_max = IntegerField('Tempo Max', validators=[Optional()])
+    submit = SubmitField('Search')
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -96,6 +121,56 @@ def login():
 def logout():
     logout_user()
     return redirect(url_for('login'))
+
+
+@app.route('/search', methods=['GET', 'POST'])
+@login_required
+def search():
+    form = SearchForm()
+    form.tonart.choices = [('', 'any')] + [(t.tonart, t.tonart) for t
+                                           in Song.query.with_entities(
+                                               Song.tonart
+                                               ).distinct()]
+    form.genre.choices = [('', 'any')] + [(g.genre, g.genre) for g
+                                          in Song.query.with_entities(
+                                              Song.genre
+                                              ).distinct()]
+    form.takt.choices = [('', 'any')] + [(t.takt, t.takt) for t
+                                         in Song.query.with_entities(
+                                             Song.takt
+                                             ).distinct()]
+
+    songs = []
+    if form.validate_on_submit():
+        query = Song.query
+        if form.name.data:
+            query = query.filter(Song.title.ilike(f'%{form.name.data}%'))
+        if form.artist_name.data:
+            query = query.filter(Song.artist_name.ilike(
+                f'%{form.artist_name.data}%'))
+        if form.tonart.data:
+            query = query.filter(
+                    Song.tonart ==
+                    form.tonart.data) if form.tonart.data != 'any' else query
+        if form.genre.data:
+            query = query.filter(
+                    Song.genre ==
+                    form.genre.data) if form.genre.data != 'any' else query
+        if form.takt.data:
+            query = query.filter(
+                    Song.takt ==
+                    form.takt.data) if form.takt.data != 'any' else query
+        if form.release_start.data:
+            query = query.filter(Song.release_date >= form.release_start.data)
+        if form.release_end.data:
+            query = query.filter(Song.release_date <= form.release_end.data)
+        if form.tempo_min.data:
+            query = query.filter(Song.tempo >= form.tempo_min.data)
+        if form.tempo_max.data:
+            query = query.filter(Song.tempo <= form.tempo_max.data)
+
+        songs = query.all()
+    return render_template('search.html', form=form, songs=songs)
 
 
 @app.route('/')

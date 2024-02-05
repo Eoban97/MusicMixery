@@ -1,0 +1,17 @@
+<html>
+  <body>
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        <div>{{ form.name.label }}: {{ form.name }}</div>
+        <div>{{ form.artist_name.label }}: {{ form.artist_name }}</div>
+        <div>{{ form.tonart.label }}: {{ form.tonart }}</div>
+        <div>{{ form.genre.label }}: {{ form.genre }}</div>
+        <div>{{ form.takt.label }}: {{ form.takt }}</div>
+        <div>{{ form.release_start.label }}: {{ form.release_start }}</div>
+        <div>{{ form.release_end.label }}: {{ form.release_end }}</div>
+        <div>{{ form.tempo_min.label }}: {{ form.tempo_min }}</div>
+        <div>{{ form.tempo_max.label }}: {{ form.tempo_max }}</div>
+        <div>{{ form.submit() }}</div>
+    </form>
+  </body>
+</html>
