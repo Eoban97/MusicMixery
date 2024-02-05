@@ -1,10 +1,45 @@
-<html>
-  <body>
-    <form method="POST", action="">
-      {{ form.hidden_tag() }}
-      {{ form.username }}
-      {{ form.password }}
-      {{ form.submit }}
-    </form>
-  </body>
-</html>
+{% extends "base.html" %}
+
+{% block title %}Login{% endblock %}
+
+{% block navitems %}
+<li class="nav-item" style="list-style-type: none; display: inline; padding-right: 20px;">
+    <a class="nav-link" href="{{ url_for('register') }}" style="display: inline;">Register</a>
+</li>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="row justify-content-center">
+      <div class="col-md-6">
+          <div class="card mt-5">
+              <div class="card-header text-center">
+                  <h2>Login</h2>
+              </div>
+              <div class="card-body">
+                  <form method="POST" action="{{ url_for('login') }}">
+                      {{ form.hidden_tag() }}
+                      <div class="form-group">
+                          {{ form.username.label(class="form-label") }}
+                          {{ form.username(class="form-control", placeholder="Your Username") }}
+                      </div>
+                      <div class="form-group mb-3">
+                          {{ form.password.label(class="form-label") }}
+                          {{ form.password(class="form-control", placeholder="Your Password") }}
+                      </div>
+                      <div class="form-group d-grid gap-2">
+                          {{ form.submit(class="btn btn-primary") }}
+                      </div>
+                  </form>
+              </div>
+          </div>
+      </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    console.log('testing');
+</script>
+{% endblock %}
