@@ -1,6 +1,6 @@
-from flask import Flask, render_template, redirect, url_for, flash
+from flask import Flask, render_template, redirect, url_for, flash, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
-from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user
+from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, SelectField, DateField, IntegerField
 from wtforms.validators import InputRequired, Length, ValidationError, Optional
@@ -106,6 +106,12 @@ class SearchForm(FlaskForm):
     submit = SubmitField('Search')
 
 
+class CreatePlaylistForm(FlaskForm):
+    name = StringField('Playlist Name', validators=[InputRequired(),
+                                                    Length(min=1, max=40)])
+    submit = SubmitField('Create')
+
+
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegisterForm()
@@ -191,6 +197,75 @@ def search():
 
         songs = query.all()
     return render_template('search.html', form=form, songs=songs)
+
+
+@app.route('/playlists', methods=['GET', 'POST'])
+@login_required
+def playlists():
+    form = CreatePlaylistForm()
+    if form.validate_on_submit():
+        new_playlist = Playlist(name=form.name.data, user_id=current_user.id)
+        db.session.add(new_playlist)
+        db.session.commit()
+        return redirect(url_for('playlists'))
+
+    user_playlists = Playlist.query.filter_by(user_id=current_user.id).all()
+    return render_template('playlists.html', form=form,
+                           playlists=user_playlists)
+
+
+@app.route('/playlists/<int:playlist_id>', methods=['GET', 'POST'])
+@login_required
+def playlist(playlist_id):
+    playlist = Playlist.query.filter_by(id=playlist_id, user_id=current_user.id
+                                        ).first()
+    if playlist:
+        songs = playlist.songs
+        return render_template('playlist.html', playlist=playlist, songs=songs)
+
+    return render_template('notfound.html')
+
+
+@app.route('/add_song_to_playlist/<int:song_id>', methods=['POST'])
+@login_required
+def add_song_to_playlist(song_id):
+    playlist_id = request.form.get('playlist_id')
+    if playlist_id:
+        playlist = Playlist.query.filter_by(id=playlist_id,
+                                            user_id=current_user.id).first()
+        if playlist:
+            existing_song = next((song for song in playlist.songs
+                                  if song.id == song_id), None)
+            if not existing_song:
+                song = Song.query.get(song_id)
+                if song:
+                    playlist.songs.append(song)
+                    db.session.commit()
+                    return jsonify('Song added to playlist successfully.'), 200
+                else:
+                    return jsonify('Song not found.'), 404
+            else:
+                return jsonify('Song already in playlist.'), 400
+        else:
+            return jsonify('Playlist not found.'), 404
+    else:
+        return jsonify('No playlist selected.', 400)
+
+    return redirect(url_for('search'))
+
+
+@app.route('/delete_playlist/<int:playlist_id>', methods=['POST'])
+@login_required
+def delete_playlist(playlist_id):
+    playlist = Playlist.query.filter_by(id=playlist_id,
+                                        user_id=current_user.id).first()
+    if playlist:
+        db.session.delete(playlist)
+        db.session.commit()
+    else:
+        flash('Playlist not found or you do not have permission to delete it.',
+              'error')
+    return redirect(url_for('playlists'))
 
 
 @app.route('/')
