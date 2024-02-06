@@ -268,6 +268,29 @@ def delete_playlist(playlist_id):
     return redirect(url_for('playlists'))
 
 
+@app.route('/delete_song_from_playlist/<int:playlist_id>/<int:song_id>',
+           methods=['POST'])
+@login_required
+def delete_song_from_playlist(playlist_id, song_id):
+    playlist = Playlist.query.filter_by(id=playlist_id,
+                                        user_id=current_user.id).first()
+    if not playlist:
+        return redirect(url_for('playlists'))
+
+    song_to_delete = next((song for song in playlist.songs
+                           if song.id == song_id), None)
+    if not song_to_delete:
+        return redirect(url_for('playlist', playlist_id=playlist_id))
+
+    try:
+        playlist.songs.remove(song_to_delete)
+        db.session.commit()
+    except Exception:
+        db.session.rollback()
+
+    return redirect(url_for('playlist', playlist_id=playlist_id))
+
+
 @app.route('/')
 @login_required
 def home():
