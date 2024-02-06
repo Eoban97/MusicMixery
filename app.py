@@ -137,8 +137,9 @@ def login():
                 login_user(user)
                 return redirect(url_for('home'))
             else:
-                flash('Wrong username or password')
-
+                flash('Incorrect password')
+        else:
+            flash('User not found')
     return render_template('login.html', form=form)
 
 
@@ -254,7 +255,7 @@ def add_song_to_playlist(song_id):
     return redirect(url_for('search'))
 
 
-@app.route('/delete_playlist/<int:playlist_id>', methods=['POST'])
+@app.route('/delete_playlist/<int:playlist_id>', methods=['GET', 'POST'])
 @login_required
 def delete_playlist(playlist_id):
     playlist = Playlist.query.filter_by(id=playlist_id,
@@ -269,7 +270,7 @@ def delete_playlist(playlist_id):
 
 
 @app.route('/delete_song_from_playlist/<int:playlist_id>/<int:song_id>',
-           methods=['POST'])
+           methods=['GET', 'POST'])
 @login_required
 def delete_song_from_playlist(playlist_id, song_id):
     playlist = Playlist.query.filter_by(id=playlist_id,

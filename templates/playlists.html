@@ -9,34 +9,43 @@
 {% endblock %}
 
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-lg-6 col-md-8">
-        <div class="mt-4 mb-4">
-            <h2 class="text-center">Create a New Playlist</h2>
-            <form method="POST" action="">
-                {{ form.hidden_tag() }}
-                <div class="mb-3">
-                    {{ form.name.label(class="form-label") }}
-                    {{ form.name(class="form-control", size=20) }}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow mb-4">
+                <div class="card-body">
+                    <h2 class="card-title text-center">Create a New Playlist</h2>
+                    <form method="POST" action="">
+                        {{ form.hidden_tag() }}
+                        <div class="mb-3">
+                            {{ form.name.label(class="form-label") }}
+                            {{ form.name(class="form-control", placeholder="Enter playlist name") }}
+                        </div>
+                        <div class="text-center">
+                            {{ form.submit(class="btn btn-primary") }}
+                        </div>
+                    </form>
                 </div>
-                <div class="d-grid">
-                    {{ form.submit(class="btn btn-primary") }}
-                </div>
-            </form>
-        </div>
+            </div>
 
-        <div class="mt-4 mb-4">
-            <h2 class="text-center">Your Playlists</h2>
-            <ul class="list-group">
-                {% for playlist in playlists %}
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <a href='/playlists/{{playlist.id}}'>{{ playlist.name }}</a>
-                    <span class="badge bg-primary rounded-pill">{{ playlist.songs|length }} Songs</span>
-                </li>
-                {% endfor %}
-            </ul>
+            <div class="card shadow">
+                <div class="card-body">
+                    <h2 class="card-title text-center">Your Playlists</h2>
+                    {% if playlists %}
+                    <ul class="list-group list-group-flush">
+                        {% for playlist in playlists %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <a href="{{ url_for('playlist', playlist_id=playlist.id) }}">{{ playlist.name }}</a>
+                            <span class="badge bg-primary rounded-pill">{{ playlist.songs|length }}</span>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% else %}
+                    <p class="text-muted text-center">You have no playlists. Create one to add Songs!</p>
+                    {% endif %}
+                </div>
+            </div>
         </div>
     </div>
 </div>
 {% endblock %}
-

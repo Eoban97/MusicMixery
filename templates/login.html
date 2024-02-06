@@ -27,6 +27,17 @@
                           {{ form.password.label(class="form-label") }}
                           {{ form.password(class="form-control", placeholder="Your Password") }}
                       </div>
+
+                      {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                          {% for category, message in messages %}
+                            <div class="alert alert-{{ category }} mt-3" role="alert">
+                              {{ message }}
+                            </div>
+                          {% endfor %}
+                        {% endif %}
+                      {% endwith %}
+
                       <div class="form-group d-grid gap-2">
                           {{ form.submit(class="btn btn-primary") }}
                       </div>
