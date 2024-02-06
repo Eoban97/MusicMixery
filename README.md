@@ -6,12 +6,11 @@ Clone the repo
 
 ### setup venv
 ```bash
-python3 -m venv venv
+virtualenv venv
 source venv/bin/activate  for Unix/MacOS
 venv\Scripts\activate     for Windows
-```
-
 pip install -r requirements.txt
+```
 
 ### prepare the app
 run:
