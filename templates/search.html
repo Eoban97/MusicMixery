@@ -1,17 +1,105 @@
-<html>
-  <body>
+{% extends 'base.html' %}
+
+{% block title %}MusicMixer{% endblock %}
+
+{% block navitems %}
+<li class="nav-item" style="list-style-type: none; display: inline; padding-right: 20px;">
+    <a class="nav-link" href="{{ url_for('logout') }}" style="display: inline;">Logout</a>
+</li>
+
+{% endblock %}
+{% block content %}
+<div class="py-5">
+    <h2 class="mb-4">Look for songs</h2>
     <form method="POST">
         {{ form.hidden_tag() }}
-        <div>{{ form.name.label }}: {{ form.name }}</div>
-        <div>{{ form.artist_name.label }}: {{ form.artist_name }}</div>
-        <div>{{ form.tonart.label }}: {{ form.tonart }}</div>
-        <div>{{ form.genre.label }}: {{ form.genre }}</div>
-        <div>{{ form.takt.label }}: {{ form.takt }}</div>
-        <div>{{ form.release_start.label }}: {{ form.release_start }}</div>
-        <div>{{ form.release_end.label }}: {{ form.release_end }}</div>
-        <div>{{ form.tempo_min.label }}: {{ form.tempo_min }}</div>
-        <div>{{ form.tempo_max.label }}: {{ form.tempo_max }}</div>
-        <div>{{ form.submit() }}</div>
+        <div class="row mb-3">
+            <div class="col-md-6">
+                {{ form.tempo_min.label(class="form-label") }}
+                {{ form.tempo_min(class="form-control") }}
+            </div>
+            <div class="col-md-6">
+                {{ form.tempo_max.label(class="form-label") }}
+                {{ form.tempo_max(class="form-control") }}
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-6">
+                {{ form.release_start.label(class="form-label") }}
+                {{ form.release_start(class="form-control") }}
+            </div>
+            <div class="col-md-6">
+                {{ form.release_end.label(class="form-label") }}
+                {{ form.release_end(class="form-control") }}
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-6">
+                {{ form.tonart.label(class="form-label") }}
+                {{ form.tonart(class="form-control") }}
+            </div>
+            <div class="col-md-6">
+                {{ form.takt.label(class="form-label") }}
+                {{ form.takt(class="form-control") }}
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-6">
+                {{ form.genre.label(class="form-label") }}
+                {{ form.genre(class="form-control") }}
+            </div>
+            <div class="col-md-6">
+                {{ form.artist_name.label(class="form-label") }}
+                {{ form.artist_name(class="form-control") }}
+           </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-6">
+                {{ form.name.label(class="form-label") }}
+                {{ form.name(class="form-control") }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                {{ form.submit(class="btn btn-primary") }}
+            </div>
+        </div>
     </form>
-  </body>
-</html>
+</div>
+
+<ul class="list-group">
+  {% for song in songs %}
+  <li class="list-group-item d-flex justify-content-between align-items-center">
+    "{{ song.title }}" by {{ song.artist_name }} | {{song.tempo}} BPM | {{ song.takt }} Rhythm | {{ song.release_date.year }} | {{ song.tonart }} | {{ song.genre }}
+      <div>
+          <select id="playlist-select-{{ song.id }}" class="form-select form-select-sm me-2" style="width: auto; display: inline-block;">
+              {% for playlist in current_user.playlists %}
+              <option value="{{ playlist.id }}">{{ playlist.name }}</option>
+              {% endfor %}
+          </select>
+          <button onclick="addSongToPlaylist({{ song.id }})" class="btn btn-sm btn-success">Add to Playlist</button>
+      </div>
+  </li>
+  {% endfor %} 
+</ul>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function addSongToPlaylist(songId) {
+    var playlistId = document.getElementById('playlist-select-' + songId).value;
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "/add_song_to_playlist/" + songId, true);
+    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    xhr.onreadystatechange = function() {
+        if (this.readyState == 4 ) {
+          if( this.status == 200) alert("Song added to playlist successfully!");
+          if(this.status == 429) alert("Song already added to playlist")
+          if(this.status == 400) alert("Error with parameters")
+        }
+    };
+    xhr.send("playlist_id=" + playlistId);
+}
+</script>
+{% endblock %}
+

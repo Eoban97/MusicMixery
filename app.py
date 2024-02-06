@@ -94,15 +94,15 @@ class LoginForm(FlaskForm):
 
 
 class SearchForm(FlaskForm):
-    name = StringField('Name', validators=[Optional()])
+    name = StringField('Song title', validators=[Optional()])
     artist_name = StringField('Artist Name', validators=[Optional()])
     tonart = SelectField('Tonart', validators=[Optional()])
     genre = SelectField('Genre', validators=[Optional()])
     takt = SelectField('Takt', validators=[Optional()])
-    release_start = DateField('Release Start', validators=[Optional()])
-    release_end = DateField('Release End', validators=[Optional()])
-    tempo_min = IntegerField('Tempo Min', validators=[Optional()])
-    tempo_max = IntegerField('Tempo Max', validators=[Optional()])
+    release_start = DateField('Released after ', validators=[Optional()])
+    release_end = DateField('Released before', validators=[Optional()])
+    tempo_min = IntegerField('BPM Min', validators=[Optional()])
+    tempo_max = IntegerField('BPM Max', validators=[Optional()])
     submit = SubmitField('Search')
 
 
@@ -245,11 +245,11 @@ def add_song_to_playlist(song_id):
                 else:
                     return jsonify('Song not found.'), 404
             else:
-                return jsonify('Song already in playlist.'), 400
+                return jsonify('Song already in playlist.'), 429
         else:
             return jsonify('Playlist not found.'), 404
     else:
-        return jsonify('No playlist selected.', 400)
+        return jsonify('No playlist selected.'), 400
 
     return redirect(url_for('search'))
 

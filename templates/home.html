@@ -9,7 +9,31 @@
 {% endblock %}
 
 {% block content %}
-<h2>Dashboard</h2>
+<div class="mt-4 mb-5 text-center">
+    <h2>Welcome to Your MusicMixer Dashboard</h2>
+    <p class="lead">Manage your playlists and discover new music with ease.</p>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card pt-5 pb-5 text-center">
+            <div class="card-body">
+                <h5 class="card-title">Your Playlists</h5>
+                <p class="card-text">Access and manage your curated playlists.</p>
+                <a href="{{ url_for('playlists') }}" class="btn btn-primary">View Playlists</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card pt-5 pb-5 text-center">
+            <div class="card-body">
+                <h5 class="card-title">Search Music</h5>
+                <p class="card-text">Explore new songs and add them to your playlists.</p>
+                <a href="{{ url_for('search') }}" class="btn btn-primary">Search Songs</a>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
 
 {% block scripts %}
