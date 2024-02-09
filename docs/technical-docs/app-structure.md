@@ -17,7 +17,7 @@ Eoban Munsi, Wakman Safi, Ertan Tunc
 {: toc }
 </details>
 
-![get_list_todos_sample](assets/images/app_structure_MusicMixery.png)
+![get_list_todos_sample](../assets/images/app_structure_MusicMixery.png)
 
 ## MUSICMIXERY-MAIN
 

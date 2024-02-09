@@ -27,4 +27,5 @@ Die Zielgruppe ist Altersunabhängig. Es sollen vor allem Musikbegeisterte Inter
 
 ## [Customer journey]
 
-![get_list_todos_sample](assets/images/Ablaufdiagramm_MusicMixery-1.png)
+![get_list_todos_sample](../assets/images/Ablaufdiagramm_MusicMixery-1.png)
+
