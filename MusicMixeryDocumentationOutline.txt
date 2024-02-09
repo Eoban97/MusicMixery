@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 Pages / Table of Contents
 
 Seite Homescreen (Appfunktionalität beschreiben) 
@@ -41,3 +42,48 @@ Zuständigkeiten
 
 
 
+=======
+Pages / Table of Contents
+
+Seite Homescreen (Appfunktionalität beschreiben) 
+-> Button "Find Music"
+-> Button "Playlists erkunden" -> neue seite mit spezifischen Playlists z.B. 7/8 Takt
+
+Seite Find Music 
+-> Attributbuttons nach denen man filtern kann (als Dropdownmenü)
+-> Suchbutton (SQL-Abfrage an die Datenbank, Ergebnissliste aktualisiert sich)
+-> Button "Back Home"
+
+Seite Playlists erkunden
+-> anklickbares PNG der jeweiligen Playlists (Ergebnissliste öffnet sich)
+-> Button "Back Home"
+
+
+-------optional-------
+(- auf Homescreen den Button "Add Music")
+(- Login um eigene Playlists zu erstellen)
+
+
+Attribute
+- artist name
+- title
+- release date
+- duration
+- genre & style
+- themes
+- takt
+- tempo (bpm)
+- tonart
+
+Zuständigkeiten
+- Front-End: Ertan
+- Back-End: Eoban
+- Datenbanken: Wakman
+
+
+
+
+
+
+
+>>>>>>> 9bc351accecc3c504ace1fbbf3dbcb3d5f9e094a
