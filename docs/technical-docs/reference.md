@@ -1,5 +1,5 @@
 ---
-title: Referenz
+title: Reference
 parent: Technische Dokumentation
 nav_order: 4
 ---

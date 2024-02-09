@@ -1,5 +1,5 @@
 ---
-title: App-Verhalten
+title: App Behavior
 parent: Technische Dokumentation
 nav_order: 3
 ---
